@@ -14,33 +14,16 @@
           transition="scale-transition"
           width="40"
         />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
       </div>
       <v-spacer></v-spacer>
       <v-btn to="/" text>Home</v-btn>
       <v-btn to="/about" text>About</v-btn>
       <v-btn to="/login" text>登入</v-btn>
       <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
     </v-app-bar>
 
     <v-main>
+      <snackbar></snackbar>
       <router-view />
     </v-main>
   </v-app>
@@ -48,8 +31,13 @@
 
 <script>
 
+import Snackbar from '@/components/_partial/Snackbar'
+
 export default {
   name: 'App',
+  components: {
+    Snackbar
+  },
   data: () => ({
     //
   }),

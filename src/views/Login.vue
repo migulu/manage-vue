@@ -24,7 +24,6 @@
             :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
             :rules="[rules.required, rules.min]"
             :type="show1 ? 'text' : 'password'"
-            name="input-10-1"
             label="密碼"
             hint="At least 8 characters"
             counter
@@ -37,7 +36,7 @@
           cols="12"
           md="4"
         >
-
+        <v-btn @click="doLogin()">Submit</v-btn>
         </v-col>
       </v-row>
     </v-container>
@@ -45,6 +44,7 @@
 </template>
 
 <script>
+import router from '../router'
   export default {
     data () {
       return {
@@ -61,5 +61,42 @@
         },
       }
     },
+    methods: {
+      doLogin() {
+        //console.log("Do Login");
+        this.$api.auth.login({account: this.account, password: this.password})
+        .then((response) => {
+          //console.log(response.data);
+          if (response.data.token === undefined){
+            this.$store.dispatch('snackbar/openSnackbar', {
+              "msg": "請輸入正確的帳號密碼"
+            });
+          } else {
+            this.$store.dispatch('auth/setAuth', {
+              "token": response.data.token,
+              "isLogin": true 
+            }).then(() => {
+              this.$router.push('/home');
+              // router.replace({
+              //   name: 'Home'
+              // });
+            });
+
+            //console.log("response",response)
+          }
+        });
+      }
+    },
+    mounted: function(){
+        if (this.$store.state.auth.isLogin === true){
+          this.$store.dispatch('snackbar/openSnackbar', {
+              "msg": "已經是登入狀態，所以轉到 HOME"
+            });
+          router.replace({
+            name: 'Home'
+          });
+        }
+    }
+    
   }
 </script>
