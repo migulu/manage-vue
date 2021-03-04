@@ -5,7 +5,7 @@ import store from '@/store'
 import {tip, toLogin, to403Page} from './utils.js'
 
 
-
+//有正常連上 api server，然後 server 回傳的錯誤
 const errorHandle = (status, msg) => {
   switch (status) {
     case 400:
@@ -50,8 +50,10 @@ instance.interceptors.request.use((config) => {
   const token = store.state.auth.token;
   console.log("auth=",store.state.auth);
   token && (config.headers.Authorization = 'Bearer ' + token);
+  console.log("config=",config);
   return config;
 },(error) => {
+  console.log("error",error);
   return Promise.reject(error);
 });
 

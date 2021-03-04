@@ -21,8 +21,10 @@ export default {
     },
   },
   mounted: function(){
-    console.log(this.$api.v1.users);
-      this.$api.v1.users.detail();
+    console.log("要呼叫 users.detail",this.$api.v1.users);
+      this.$api.v1.users.detail()
+      .then((result) => { console.log("result=",result)})
+      .catch((error) => { console.log("error=",error)});
   }
 }
 </script>
