@@ -20,7 +20,7 @@ const errorHandle = (status, msg) => {
           'token': '',
           'isLogin': false
         });
-        tip('登入過期，請重新登入')
+        console.log('登入過期，請重新登入')
       setTimeout(() => {
         toLogin();
       },1000);
@@ -42,23 +42,25 @@ const errorHandle = (status, msg) => {
 
 // axios的實例
 var instance = axios.create({
-  baseURL: 'https://manage.smartweb.adsli.org/api/'
+  //baseURL: 'https://fe146qqfai.execute-api.us-east-1.amazonaws.com'
+  baseURL: 'https://ngrok.smartweb.adsli.org'
+
 })
 
 // request攔截器
 instance.interceptors.request.use((config) => {
   const token = store.state.auth.token;
-  console.log("auth=",store.state.auth);
-  token && (config.headers.Authorization = 'Bearer ' + token);
-  console.log("config=",config);
+  //console.log("auth=",store.state.auth);
+  token && (config.headers.Authorization = token);
+  //console.log("config=",config);
   return config;
 },(error) => {
-  console.log("error",error);
+  //console.log("error from request",error);
   return Promise.reject(error);
 });
 
 instance.interceptors.response.use((response) => {
-  console.log("axio response=",response)
+  //console.log("axio response=",response)
   return response;
 }, (error) => {
   const { response } = error;
@@ -68,7 +70,7 @@ instance.interceptors.response.use((response) => {
     return Promise.reject(error);
   } else {
     if (!window.navigator.onLine) {
-      tip('網路出了點問題');
+      //tip('網路出了點問題');
     } else {
       return Promise.reject(error);
     }

@@ -45,6 +45,7 @@
 
 <script>
 import router from '../router'
+import utils from '../helper/utils.js'
   export default {
     data () {
       return {
@@ -66,17 +67,22 @@ import router from '../router'
         //console.log("Do Login");
         this.$api.auth.login({account: this.account, password: this.password})
         .then((response) => {
-          //console.log(response.data);
-          if (response.data.token === undefined){
+          console.log("response=",response);
+          if (response.data === null || response.data.status === undefined){
             this.$store.dispatch('snackbar/openSnackbar', {
               "msg": "請輸入正確的帳號密碼"
             });
           } else {
             this.$store.dispatch('auth/setAuth', {
-              "token": response.data.token,
-              "isLogin": true 
+              "token": response.data.data.token,
+              "isLogin": true, 
             }).then(() => {
-              this.$router.push('/home');
+              if (utils.getUrlKey("redirect") !== null) {
+                this.$router.push(utils.getUrlKey("redirect"));
+              } else {
+                this.$router.push('/home');
+              }
+              //
               // router.replace({
               //   name: 'Home'
               // });
@@ -88,7 +94,7 @@ import router from '../router'
       }
     },
     mounted: function(){
-        if (this.$store.state.auth.isLogin === true){
+        if (this.$store.state.auth.isLogin === true && this.$store.state.auth.token !== null && this.$store.state.auth.token !== undefined && this.$store.state.auth.token !== ""){
           this.$store.dispatch('snackbar/openSnackbar', {
               "msg": "已經是登入狀態，所以轉到 HOME"
             });
