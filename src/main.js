@@ -7,7 +7,7 @@ import api from './apis'
 
 Vue.config.productionTip = false
 
-Vue.prototype.$api = api; // api 變成 prototype, 方便使用
+Vue.prototype.$api = api; 
 
 new Vue({
   router,

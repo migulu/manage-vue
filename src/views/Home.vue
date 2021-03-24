@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <v-btn @click="getClients()">click</v-btn>
-    <HelloWorld msg="這是傳進去的 msg "/>
+    <HelloWorld msg="test2 "/>
   </div>
 </template>
 

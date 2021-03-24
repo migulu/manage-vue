@@ -46,7 +46,7 @@
                 icon ><v-icon dense>{{ item.info}}</v-icon></v-btn>
                </template>
      <!-- 功能設定(跳出視窗)-這種寫法會變成一次開30個 -->
- <template v-slot:[`item.func`]="{  item  }"> 
+ <!-- <template v-slot:[`item.func`]="{  item  }"> 
   <div class="text-center">
     <v-dialog
       v-model="editDialog"
@@ -89,7 +89,43 @@
       </v-card>
     </v-dialog>
   </div>
-</template>
+</template> -->
+<!-- 插入dialog系列 -->
+ <template v-slot:top>
+      <v-toolbar
+        flat
+      >
+        <v-toolbar-title>My CRUD</v-toolbar-title>
+        <v-divider
+          class="mx-4"
+          inset
+          vertical
+        ></v-divider>
+        <v-spacer></v-spacer>
+     
+        <v-dialog v-model="editDialog" max-width="500px">
+          <v-card>
+            <v-card-title class="headline">Are you sure you want to delete this item?</v-card-title>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <!-- <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn> -->
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-toolbar>
+    </template>
+<!-- 插入icon -->
+ <template v-slot:[`item.func`]="{  item  }">
+      <v-icon
+        small
+        @click="editDialog(item)"
+      >
+        {{ item.func }}
+      </v-icon>
+    </template>
+
  </v-data-table>
             </template>     
      <!-- <v-btn @click="showMsg()">秀MSG</v-btn> -->
@@ -101,7 +137,7 @@
 export default {
   name: 'About',
 
-  data() {
+ data: () =>{
     return{
        editDialog: false,//跳出dialog先預設 false .現在這樣寫會變成全域--會當掉，應該另外做個component
        watch: {
@@ -115,7 +151,7 @@ export default {
       },
       //關閉按鈕--還未串
          deleteItemConfirm () {
-        this.closeDelete()
+        this.closeDelete();
       },
        },
        

@@ -1,24 +1,89 @@
 <template>
   <v-app>
-    <v-app-bar app color="primary" dark>
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-      </div>
+      <!-- 側邊攔  -->
+        <v-navigation-drawer
+        v-model="drawer"
+        absolute
+        temporary
+      >
+      <v-list-item>
+        <v-list-item-content>
+          <v-list-item-title class="title">
+            Menu
+          </v-list-item-title>
+          <!-- <v-list-item-subtitle>
+            subtext
+          </v-list-item-subtitle> -->
+        </v-list-item-content>
+      </v-list-item>
+  
+        <v-divider></v-divider>
+  
+        <v-list>
+          <v-list-group
+            v-for="item in items"
+            :key="item.title"
+            v-model="item.active"
+            :prepend-icon="item.action"
+            no-action
+          >
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title v-text="item.title"></v-list-item-title>
+              </v-list-item-content>
+            </template>
+    
+            <v-list-item
+              v-for="child in item.items"
+              :key="child.title"
+            >
+              <v-list-item-content>
+                <v-list-item-title v-text="child.title"></v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+          </v-list-group>
+        </v-list>
+      </v-navigation-drawer>
+    <!-- header  -->
+    <v-app-bar
+      app
+      color="primary"
+      dark
+    >
+     <v-app-bar-nav-icon   @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+     <!-- 加入書籤 -->
+          <div id="bookmark" class="d-flex">
+          <div class="bookmark-title">功能快捷列</div>
+          <v-chip outlined to="/login">登入畫面</v-chip>
+          <v-chip outlined to="/">首頁</v-chip>
+          <v-chip outlined to="/about">公司資料列表</v-chip>
+          <v-chip outlined  to="/edit">有編輯器畫面</v-chip>
+          <v-chip outlined>客戶-米幣管理</v-chip>
+           </div>
       <v-spacer></v-spacer>
-      <v-btn to="/" text>Home</v-btn>
+      <!-- <v-btn to="/" text>Home</v-btn>
       <v-btn to="/about" text>About</v-btn>
-      <v-btn v-if="isLogin" @click="doLogout()" text>登出</v-btn>
-      <v-btn v-else to="/login" text>登入</v-btn>
-
+      <v-btn to="/login" text>登入</v-btn> -->
       <v-spacer></v-spacer>
-      <div v-if="isLogin">{{ getAccount }} 你好</div>
+
+            <v-badge overlap content="1" offset-x="24px" offset-y="24px" color="secondary">
+            <v-btn icon>
+              <v-icon>mdi-bell</v-icon>
+            </v-btn>
+          </v-badge>
+
+          <v-menu offset-y>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn icon v-bind="attrs" v-on="on">
+                <v-icon>mdi-account-circle</v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item v-for="(item, index) in usermenu" :key="index" link>
+                <v-list-item-title>{{ item.title }}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
     </v-app-bar>
 
     <v-main>
@@ -29,38 +94,126 @@
 </template>
 
 <script>
-  import Snackbar from "@/components/_partial/Snackbar";
-  import jwt_decode from "jwt-decode";
 
-  export default {
-    name: "App",
-    components: {
-      Snackbar,
-    },
-    data: () => ({
-      account: "",
-    }),
-    computed: {
-      isLogin() {
-        return this.$store.state.auth.isLogin;
+import Snackbar from '@/components/_partial/Snackbar'
+
+export default {
+  name: 'App',
+  components: {
+    Snackbar
+  },
+  // data: () => ({
+  //   //
+  // }),
+   data () {
+      return {
+        drawer: null,
+      //側邊選單資料
+        items: [
+      {
+        action: 'mdi-account-supervisor',
+        items: [
+          { title: '新雙贏客戶' },
+          { title: '舊雙贏客戶' },
+          { title: '舊年費客戶' },
+          { title: '經銷商' },
+          { title: '有設定GA的客戶' },
+          { title: '有開啟Enhanced的客戶' },
+          { title: '有用過萊碼機制的客戶' }
+        ],
+        title: '客戶列表',
       },
-      getAccount() {
-          const decode = jwt_decode(this.$store.state.auth.token);
-          return decode.account        
+      {
+        action: 'mdi-cogs',
+        items: [
+          { title: '收費設定' },
+          { title: '系統設定' },
+          { title: 'CSP設定' },
+          { title: '金流相關設定' },
+          { title: '合約內容設定' },
+          { title: '通知機制設定' },
+          { title: 'GA設定' },
+          { title: '狀態列版本設定' }
+        ],
+        title: '新雙贏計畫設定',
+      },
+      {
+        action: 'mdi-chart-areaspline-variant',
+        items: [
+          { title: '客戶 CODE 設定' },
+          { title: '重新取得 FB access token' },
+          { title: '重新取得 Google Access token' }
+        ],
+        title: '行銷設定',
+      },
+      {
+        action: 'mdi-currency-usd',
+        items: [
+          { title: '系統保證金' },
+          { title: '米幣訂單' },
+          { title: '月費' }
+        ],
+        title: '費用收付',
+      },
+      {
+        action: 'mdi-piggy-bank',
+        items: [
+          { title: '米幣管理' },
+          { title: '購買米幣優惠折扣設定' },
+          { title: '米幣條款及相關設定' },
+          { title: '客戶米幣狀況' },
+          { title: '中央銀行' }
+        ],
+        title: '米幣設定',
+      },
+      {
+        action: 'mdi-file',
+        items: [ 
+          { title: '後台系統公告管理' },
+          { title: '前台首頁設定' },
+          { title: '廣告管理' }
+      ],
+        title: '後台管理',
+      },
+      {
+        action: 'mdi-web',
+        items: [ 
+          { title: '語系檔管理' },
+          { title: '通知信件管理' },
+      ],
+        title: '語系管理',
+      },
+      {
+        action: 'mdi-pencil',
+        items: [ 
+          { title: '自訂網頁(page.php)' },
+          { title: 'eclib.js' },
+      ],
+        title: '自訂內容',
+      },
+      {
+        action: 'mdi-medical-bag',
+        items: [ 
+          { title: '設定' },
+      ],
+        title: '安全防護機制設定',
+      },
+    ],
+      //個人資料下拉選單
+          usermenu: [{
+              title: '個人檔案',
+              href: 'link01'
+            },
+            {
+              title: '設定',
+              href: 'link02'
+            },
+            {
+              title: '登出',
+              href: 'link03'
+            },
+          ],
       }
     },
-    methods: {
-      doLogout() {
-        this.$store
-          .dispatch("auth/setAuth", {
-            token: "",
-            isLogin: false,
-            isAdmin: false,
-          })
-          .then(() => {
-            this.$router.push("/home");
-          });
-      },
-    },
-  };
+};
 </script>
