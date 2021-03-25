@@ -44,7 +44,6 @@ const errorHandle = (status, msg) => {
 var instance = axios.create({
   //baseURL: 'https://fe146qqfai.execute-api.us-east-1.amazonaws.com'
   baseURL: 'https://ngrok.smartweb.adsli.org'
-
 })
 
 // request攔截器

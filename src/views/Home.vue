@@ -1,21 +1,23 @@
 <template>
   <div class="home">
-    <v-btn @click="getClients()">click</v-btn>
-    <HelloWorld msg="test2 "/>
+
+    這是登入後的首頁123
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+
 
 export default {
   name: 'Home',
   data() {
     return{}
   },
-  components: {
-    HelloWorld
+  beforeMount: function() {
+    if (this.$store.state.auth.isLogin === false){
+      this.$router.push("/login");
+    }
   },
   methods: {
     getClients() {
