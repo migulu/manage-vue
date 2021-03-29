@@ -7,8 +7,24 @@ import api from './apis'
 
 Vue.config.productionTip = false
 
-Vue.prototype.$api = api; 
-
+Vue.prototype.$api = api;
+router.beforeEach((to, from, next) => {
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    // if route requires auth and user isn't authenticated
+    if (store.state.auth.isLogin === false) {
+      let query = to.fullPath.match(/^\/$/) ? {} : {
+        redirect: to.fullPath
+      }
+      next({
+        path: '/login',
+        query: query
+      })
+      return
+    }
+    next()
+  }
+  next()
+})
 new Vue({
   router,
   vuetify,
