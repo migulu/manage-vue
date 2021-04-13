@@ -7,5 +7,8 @@
 <script>
   export default {
     name: "App",
+    beforeMount() {
+      //console.log(process.env);
+    },
   };
 </script>

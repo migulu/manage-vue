@@ -42,8 +42,8 @@ const errorHandle = (status, msg) => {
 
 // axios的實例
 var instance = axios.create({
-  //baseURL: 'https://fe146qqfai.execute-api.us-east-1.amazonaws.com'
-  baseURL: 'https://ngrok.smartweb.adsli.org'
+  baseURL: process.env.VUE_APP_API_HOST
+  //baseURL: 'https://ngrok.smartweb.adsli.org'
 })
 
 // request攔截器
