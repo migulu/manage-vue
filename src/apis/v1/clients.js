@@ -1,18 +1,18 @@
 import req from '../https.js'
 
 const clients = {
-  list() {
-    return req('get', '/v1/clients/list')
+  list(params) {
+    return req('get', '/v1/clients/list',params)
   },
-  list2xeleonxeleon() {
-    return req('get', '/v1/clients/list')
+  configure() {
+    return req('get', '/v1/clients/configure')
   },
   detail(id) {
     return req('get', '/v1/clients/detail/'+id);
   },
   detailUpdate(params){
     return req('put', '/v1/clients/detail',params)
-  }
+  },
 
 }
 

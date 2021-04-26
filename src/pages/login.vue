@@ -11,6 +11,7 @@
           label="帳號"
           outlined
           dense
+          autofocus
         ></v-text-field>
         <v-text-field
           v-model="password"
@@ -22,6 +23,7 @@
           @click:append="show1 = !show1"
           outlined
           dense
+          @keydown.enter="doLogin()"
         ></v-text-field>
         <v-btn @click="doLogin()" depressed color="primary" block> 登入 </v-btn>
       </v-card-text>
