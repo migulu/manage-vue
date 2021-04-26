@@ -78,7 +78,7 @@ instance.interceptors.response.use((response) => {
 
 export default function (method, url, data=null) {
   method = method.toLowerCase();
-  console.log("method="+method);
+  //console.log("method="+method);
   if (method == 'post') {
     return instance.post(url, data);
   } else if (method == 'get') {
