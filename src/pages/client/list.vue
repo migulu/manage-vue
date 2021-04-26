@@ -14,27 +14,65 @@
     <v-form>
       <v-row>
         <!-- select 重複-->
-        <v-col
-          cols="12"
-          lg="auto"
-          v-for="(item, index) in selectItems"
-          :key="index"
-        >
+        <v-col cols="12" lg="1">
           <v-select
-            :items="selectItems[index].items"
-            name="select"
-            item-text="name"
-            :label="item.label"
+            v-model="selectItems.active.select"
+            :items="selectItems.active.items"
+            label="啟用狀態"
+            outlined
+            dense
+          ></v-select>
+        </v-col>
+        <v-col cols="12" lg="1">
+          <v-select
+            v-model="selectItems.frontend.select"
+            :items="selectItems.frontend.items"
+            label="前台狀態"
+            outlined
+            dense
+          ></v-select>
+        </v-col>
+        <v-col cols="12" lg="1">
+          <v-select
+            v-model="selectItems.overdue.select"
+            :items="selectItems.overdue.items"
+            label="逾期狀態"
             outlined
             dense
           ></v-select>
         </v-col>
 
-        <v-col cols="12" lg="auto">
-          <v-text-field label="關鍵字" outlined dense></v-text-field>
+        <v-col cols="12" lg="3">
+          <v-select
+            v-model="selectItems.package.select"
+            :items="selectItems.package.items"
+            label="選擇產品"
+            outlined
+            dense
+          ></v-select>
+        </v-col>
+
+        <v-col cols="12" lg="3">
+          <v-select
+            v-model="selectItems.dealer.select"
+            :items="selectItems.dealer.items"
+            label="選擇經銷商"
+            outlined
+            dense
+          ></v-select>
         </v-col>
         <v-col cols="12" lg="auto">
-          <v-btn depressed color="primary">
+          <v-text-field
+            v-model="selectItems.keyword"
+            label="關鍵字"
+            outlined
+            dense
+            autofocus
+            @keydown.enter="getClientList"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" lg="auto">
+          <v-btn depressed color="primary" @click=getClientList>
             搜尋
           </v-btn>
         </v-col>
@@ -87,7 +125,7 @@
 <script>
   import EditClient from "@/components/EditClient.vue"; //修改客戶資料
 
-  let moment = require("moment");  //要處理日期的
+  let moment = require("moment"); //要處理日期的
   export default {
     name: "List",
     components: {
@@ -97,7 +135,7 @@
       return {
         isDialogVisible: false, //跳出dialog先預設 false .現在這樣寫會變成全域--會當掉，應該另外做個component,
         clientId: 0,
-        clientData: {},  //單一筆修改客戶資料
+        clientData: {}, //單一筆修改客戶資料
         watch: {
           editDialog(val) {
             val || this.closeDelete();
@@ -117,37 +155,40 @@
             href: "breadcrumbs_link_1",
           },
         ],
+        selectItems: {
+          active: {
+            select: "",
+            items: [
+              { text: "啟用", value: "Y" },
+              { text: "不啟用", value: "N" }
+            ]
+          },
+        frontend: {
+          select: "",
+          items: [
+            { text: "開啟", value: "Y" },
+            { text: "關閉", value: "N" },
+          ],
+        },
+        overdue: {
+          select: "",
+          items: [
+            { text: "未逾期", value: "N" },
+            { text: "逾期", value: "Y" },
+          ],
+        },
+        package: {
+          select: "",
+          items: []
+        },
+        dealer: {
+          select: "",
+          items: []
+        },
+        keyword:""
+        },
         //select-多筆資料
-        selectItems: [
-          {
-            label: "啟用狀態",
-            items: [
-              //items是固定寫法
-              "啟用",
-              "未啟用",
-            ],
-          },
-          {
-            label: "前台狀態",
-            items: ["開", "關"],
-          },
-          {
-            label: "逾期狀態",
-            items: ["未逾期", "逾期"],
-          },
-          {
-            label: "選擇產品",
-            items: [
-              "model-A",
-              "新雙贏計畫（2010-02-28）",
-              "社群A-苗栗綠能生活網專用",
-              "社群B-苗栗綠能生活網專用",
-              "藝術街形象商圈開運產品",
-              "千店達人 - 開運1 - 無後臺：功能種類無限",
-              "千店達人 - 開運2 - 有後臺，鎖功能：（最新消息，產品型錄，相關連結，聯絡我們，公司簡介）",
-              "千店達人 - 開運3 - 有後臺，鎖功能：（公司簡介，產品型錄，聯絡方法，客服系統，訪客留言）",
-            ],
-          },
+        selectItems2: [
           {
             label: "選擇經銷商",
             items: [
@@ -253,9 +294,7 @@
             value: "smartweb",
           },
         ],
-        clients: [
-          
-        ],
+        clients: [],
 
         //功能選單資料
         funcmenu: [
@@ -316,8 +355,25 @@
         });
       },
       getClientList() {
-        //const list = this.$api.v1.clients.list();
-        this.$api.v1.clients.list().then((response) => {
+        //const list = this.$api.v1.clients.list();    
+        let param = {}
+        if (this.$route.query.type !== undefined){
+          param['type'] = this.$route.query.type;
+          param["package"] = 12;
+        } else {
+          param["package"] = this.selectItems['package'].select;  
+        }
+        param["active"] = this.selectItems['active'].select;
+        param["frontend"] = this.selectItems['frontend'].select;
+        param["overdue"] = this.selectItems['overdue'].select;
+        
+        param["dealer"] = this.selectItems['dealer'].select;
+        param["keyword"] = this.selectItems['keyword']
+
+        console.log(param);
+      
+
+        this.$api.v1.clients.list(param).then((response) => {
           const clients = [];
           if (Array.isArray(response.data)) {
             response.data.forEach(function(item) {
@@ -363,20 +419,44 @@
           }
         });
       },
+      getClientConfigure(){
+        this.$api.v1.clients.configure().then((response) => {
+          //console.log(response.data.packages);
+          let packages = [{text:"---",value:0}]
+          if (Array.isArray(response.data.packages)) {
+            response.data.packages.forEach(function(item) {
+              item.text = item.name;
+              item.value = item.id;
+              packages.push(item)
+            })
+            this.selectItems.package['items'] = packages;
+          }
+          let dealers = [{text:"---",value:0}]
+          if (Array.isArray(response.data.dealers)) {
+            response.data.dealers.forEach(function(item) {
+              item.text = item.company;
+              item.value = item.cid;
+              dealers.push(item)
+            })
+            this.selectItems.dealer['items'] = dealers;
+          }
+
+        })
+      },
       onEditClientSaved(client) {
         console.log("client save");
         this.$api.v1.clients.detailUpdate(client).then((response) => {
-          if (response.data.result === '0') {
-              const findData = (element) => element.cid === response.data.cid
-              const savedDataIndex = this.clients.findIndex(findData);
-              //this.clients[savedDataIndex] = client;
-              console.log("saveDataIndex="+savedDataIndex);
-              let tmpClient = this.clients[savedDataIndex];
-              console.log('tmpClient=',tmpClient);
-              tmpClient.company = response.data.client.company;
-              this.$set(this.clients, savedDataIndex, tmpClient)
+          if (response.data.result === "0") {
+            const findData = (element) => element.cid === response.data.cid;
+            const savedDataIndex = this.clients.findIndex(findData);
+            //this.clients[savedDataIndex] = client;
+            console.log("saveDataIndex=" + savedDataIndex);
+            let tmpClient = this.clients[savedDataIndex];
+            console.log("tmpClient=", tmpClient);
+            tmpClient.company = response.data.client.company;
+            this.$set(this.clients, savedDataIndex, tmpClient);
 
-              console.log(this.clients);
+            console.log(this.clients);
           }
           //console.log("response=", response);
         });
@@ -414,6 +494,7 @@
 
     mounted: function() {
       this.getClientList();
+      this.getClientConfigure();
     },
 
     //判斷有沒有登入使用，有登入時執行動作--有錯誤

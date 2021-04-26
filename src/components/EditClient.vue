@@ -20,6 +20,14 @@
             outlined
             dense
           ></v-text-field>
+
+          <v-text-field
+            v-model="client.domain2"
+            :counter="60"
+            label="網址2"
+            outlined
+            dense
+          ></v-text-field>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
