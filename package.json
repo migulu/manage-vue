@@ -13,6 +13,7 @@
     "jwt-decode": "^3.1.2",
     "moment": "^2.29.1",
     "vue": "^2.6.11",
+    "vue-auto-routing": "1.0.1",
     "vue-router": "^3.2.0",
     "vue-router-layout": "^0.1.6",
     "vuetify": "^2.4.0",
