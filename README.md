@@ -54,6 +54,7 @@ src/plugins 另外安裝的套件的使用(例如 vuetify、axios 等)
 src/router Router 設定
 src/store 跟狀態管理(vuex) 有關的程式
 src/views 實際頁面
+src/sass sass預設變數、函式等
 ```
 
 ###  原始碼檔案說明

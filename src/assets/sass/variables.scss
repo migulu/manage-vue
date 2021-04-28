@@ -1,0 +1,133 @@
+// src/sass/variables.scss--自行貼上來的
+@import '~vuetify/src/styles/styles.sass';//範本有這段，好像是指全部變數
+// Globals
+$body-font-family: "Microsoft JhengHei", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+$border-radius-root: 6px;
+$font-size-root: 16px;
+
+// Variables must come before the import
+$btn-letter-spacing: 0;
+$btn-font-weight: 400;
+$list-item-title-font-size: 0.929rem;
+$list-item-dense-title-font-size: 0.929rem;
+$list-item-dense-title-font-weight: initial;
+$fab-icon-sizes: (
+  'small': 20
+);
+$btn-sizes: (
+  'default': 41,
+  'large': 54
+);
+
+//範例-不懂是什麼區塊?
+// $headings: (
+//   'h1': (
+//     'size': 3.3125rem,
+//     'line-height': 1.15em
+//   ),
+//   'h2': (
+//     'size': 2.25rem,
+//     'line-height': 1.5em
+//   )
+// );
+
+/*------------------------------------*\
+常用自訂變數
+\*------------------------------------*/
+$primary: map-get($light-green,darken-3);
+$primary-lighter: #99D066;
+$primary-darker:#387002;
+$primary-on-surface: map-get($shades,'white');
+$secondary: #676767;
+$secondary-lighter:#8e8e8e;
+$secondary-darker: #373737;
+$secondary-on-surface: map-get($shades,'white'); //在surface表面的顏色
+$gray-light: #e1e1e1;
+/*------------------------------------*\
+切版常用函式
+\*------------------------------------*/
+//圓角+陰影
+@mixin box-shadow($radius,$shadow){
+	border-radius:$radius;
+	-webkit-border-radius:$radius;
+	-moz-border-radius:$radius;
+	box-shadow: $shadow;
+	-webkit-box-shadow: $shadow;
+	-moz-box-shadow: $shadow ;
+}
+//按鈕清除框線+預設背景
+@mixin btn($border0,$bg-transparent){
+  border: $border0;//預設值0
+  background:$bg-transparent;//預設值透明
+}
+
+//動畫
+@mixin transition($s){
+  -webkit-transition:all ease-out $s; /* Safari */
+  transition:all ease-out $s;
+}
+//變形
+@mixin transform($scale) {
+  -webkit-transform: scale($scale);
+  transform: scale($scale);
+}
+//寬高
+@mixin size($width,$height){
+  width: $width;
+  height: $height;
+}
+//字級+line-height
+@mixin text($font-size-base,$line-height-base){
+ font-size:$font-size-base;
+ line-height: $line-height-base;
+}
+//處理 margin和padding
+@mixin mp($margin,$padding){
+  margin: $margin;
+  padding: $padding;
+} 
+/*只處理margin的top和bottom*/
+@mixin m-tb($top,$bottom){
+  margin-top: $top;
+  margin-bottom: $bottom;
+} 
+
+/*常用的block*/
+@mixin block-bg($color){
+  background:$color;
+}
+
+/*有定位時使用*/
+@mixin position($p,$top,$right,$bottom,$left){
+  position:$p;
+  top:$top;
+  right: $right;
+  bottom:$bottom;
+  left:$left;
+}
+/*偽元素常用*/
+@mixin pseudo($block,$bg){
+  content:" ";
+  display:$block;
+  background:$bg;
+}
+/*1px框線顏色*/
+@mixin border-solid($gray-light) {
+  border: 1px solid $gray-light;
+}
+/*預設button和a都會用到的文字變色-預設為內文字色*/
+@mixin text-hover(){
+  color:$text-color;
+  &:hover,&:focus {
+  color:$primary;
+   }
+}
+
+/*常用滑過-文字變色-預設為白色*/
+@mixin text-hover-white(){
+    color:$primary-on-surface;
+    &:hover,&:focus {
+    color:$primary-on-surface;
+    opacity:$hover-opacity;
+     }
+}
