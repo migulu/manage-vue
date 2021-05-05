@@ -48,13 +48,15 @@ vue.config.js Vue 的設定
 ```
 src/apis  主要放 API 相關的程式
 src/assets 程式中用到的靜態檔案
+src/assets/sass sass預設變數、函式等
 src/components 自行開發的 web component
 src/components/_partial 更小的 web component
+src/layouts 各種外框樣板
+src/pages 實際呈現頁面
 src/plugins 另外安裝的套件的使用(例如 vuetify、axios 等)
 src/router Router 設定
 src/store 跟狀態管理(vuex) 有關的程式
-src/views 實際頁面
-src/sass sass預設變數、函式等
+
 ```
 
 ###  原始碼檔案說明

@@ -1,15 +1,12 @@
 <template>
   <v-app>
     <!-- 側邊攔 -->
-
-   <drawer :drawer2="drawer"></drawer> 
+      <Drawer :drawershow="drawer" @close="closeDrawer"></Drawer>
     <!-- header  -->
-    <v-app-bar app color="primary" dark>
-    <!-- 側邊攔按鈕-啟動要點兩次才有作用  -->
+    <v-app-bar color="primary" dark app> 
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <bookmark></bookmark>
       <v-spacer></v-spacer>
-
       <v-badge
         v-show="msgCount"
         overlap
@@ -30,6 +27,7 @@
       <snackbar></snackbar>
       <router-view />
     </v-main>
+
   </v-app>
 </template>
 
@@ -50,11 +48,13 @@
       return {
         drawer: null,
         msg_counter: 10,
-    
-
       };
-
     },
+  methods: {
+    closeDrawer(value) {
+      this.drawer = value;
+    },
+  },
     computed: {
       usermenus: function() {
         if (this.isLogin === true) {
@@ -79,7 +79,8 @@
         } else {
           return null
         }
-      }
+      },
     },
+
   };
 </script>

@@ -22,11 +22,11 @@
 
                 <!-- 第一列-radio-1  -->
                 <v-row class="align-center">
-                  <v-col cols="3">米格魯員</v-col>
+                  <v-col cols="3">米格魯會員</v-col>
                   <v-col cols="9">
                     <v-radio-group row class="mt-0" hide-details>
-                      <v-radio label="是" value="Y"></v-radio>
-                      <v-radio label="否" value="N"></v-radio> </v-radio-group
+                      <v-radio label="是" value="Y" name="migulu_staff"></v-radio>
+                      <v-radio label="否" value="N" name="migulu_staff"></v-radio> </v-radio-group
                   ></v-col>
                 </v-row>
                 <!-- 第二列-radio-v-radio-group有預設高度，清除mt和底部註解  -->

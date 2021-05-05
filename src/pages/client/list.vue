@@ -117,6 +117,10 @@
         @saved="onEditClientSaved"
         @canceled="onEditClientCanceled"
       ></edit-client>
+      <EditFunc   
+      :client="funcData"
+      :EditFuncShow="isDialogfunc" 
+       ></EditFunc>
     </template>
     <!-- <v-btn @click="showMsg()">秀MSG</v-btn> -->
   </v-container>
@@ -124,18 +128,21 @@
 
 <script>
   import EditClient from "@/components/EditClient.vue"; //修改客戶資料
-
+  import EditFunc from "@/components/EditFunc.vue"
   let moment = require("moment"); //要處理日期的
   export default {
     name: "List",
     components: {
       EditClient,
+      EditFunc
     },
     data() {
       return {
-        isDialogVisible: false, //跳出dialog先預設 false .現在這樣寫會變成全域--會當掉，應該另外做個component,
+        isDialogVisible: false, 
+        isDialogfunc:false,
         clientId: 0,
         clientData: {}, //單一筆修改客戶資料
+        funcData: {}, //單一筆修改客戶資料
         watch: {
           editDialog(val) {
             val || this.closeDelete();
@@ -481,10 +488,16 @@
       },
 
       openFunc(id) {
-        alert("要修改" + id + "的功能");
+        // alert("要修改" + id + "的功能");
+           this.$api.v1.clients.detail(id).then((response) => {
+          this.funcData = response.data;
+          this.isDialogfunc = true;
+        });
       },
+
       openDialog() {
         this.isDialogVisible = true;
+        this.isDialogfunc= true;//
       },
       //關閉按鈕--還未串
       deleteItemConfirm() {
