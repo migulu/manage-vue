@@ -119,7 +119,9 @@
       ></edit-client>
       <EditFunc   
       :client="funcData"
-      :EditFuncShow="isDialogfunc" 
+      :visible="isDialogfunc" 
+       @saved="openFuncClientSaved"
+       @canceled="openFuncClientCanceled"
        ></EditFunc>
     </template>
     <!-- <v-btn @click="showMsg()">秀MSG</v-btn> -->
@@ -487,19 +489,47 @@
         // alert("要修改" + id + "的資料");
       },
 
-      openFunc(id) {
+      openDialog() {
+        this.isDialogVisible = true;
+      },
+
+//==== 跳出功能視窗
+   openFunc(id) {
         // alert("要修改" + id + "的功能");
            this.$api.v1.clients.detail(id).then((response) => {
           this.funcData = response.data;
           this.isDialogfunc = true;
         });
       },
+     openFuncClientSaved(client) {
+        console.log("client save");
+        this.$api.v1.clients.detailUpdate(client).then((response) => {
+          if (response.data.result === "0") {
+            const findData = (element) => element.cid === response.data.cid;
+            const savedDataIndex = this.clients.findIndex(findData);
+            //this.clients[savedDataIndex] = client;
+            console.log("saveDataIndex=" + savedDataIndex);
+            let tmpClient = this.clients[savedDataIndex];
+            console.log("tmpClient=", tmpClient);
+            tmpClient.company = response.data.client.company;
+            this.$set(this.clients, savedDataIndex, tmpClient);
 
-      openDialog() {
-        this.isDialogVisible = true;
-        this.isDialogfunc= true;//
+            console.log(this.clients);
+          }
+          //console.log("response=", response);
+        });
+
+        this.isDialogfunc = false;
       },
-      //關閉按鈕--還未串
+      openFuncClientCanceled() {
+        this.isDialogfunc = false;
+      },
+
+       openFuncDialog() {
+        this.isDialogfunc = true;
+      },
+
+      //關閉按鈕
       deleteItemConfirm() {
         this.closeDelete();
       },

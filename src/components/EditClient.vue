@@ -3,7 +3,7 @@
     <v-dialog v-model="visible" persistent max-width="1340">
       <v-card>
         <v-card-title class="headline manage-titl">
-          {{ client.account }} 的相關資料設定
+          {{ client.company }} 的相關資料設定
         </v-card-title>
         <v-card-text class="setting-block">
           <!-- 第1大區塊  -->

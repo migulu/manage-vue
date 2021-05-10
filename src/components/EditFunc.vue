@@ -1,9 +1,9 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog"  max-width="400">
+    <v-dialog v-model="visible" persistent  max-width="400">
       <v-card>
         <v-card-title class="headline manage-titl">
-          {{account }} 的功能設定
+          {{ client.company }} 的功能設定
         </v-card-title>
         <v-card-text class="setting-block">
        <v-text-field
@@ -30,41 +30,45 @@
 export default {
   name: "EditFunc",
   props: {
-  EditFuncShow: {
-      type: Boolean,
-      default: false,
+  // EditFuncShow: {
+  //     type: Boolean,
+  //     default: false,
+  //   },
+      visible: Boolean,
+    client: {
+      type: Object,
     },
-   account: String,
+  account: String,
     company: String,
   },
   data() {
     return {
-      // dialog: this.visible,
+      dialog: this.visible,
       client_data: this.client,
     };
   },
-    computed: {
-    dialog: {
-      //get 和set是固定的
-      get() {
-        return this.EditFuncShow;
-      },
-      set(newvalue) {
-        this.$emit("close", newvalue);
-      },
-    },
-  },
-  // methods: {
-  //   onSave() {
-  //     //console.log("onSave client =",this.client);
-  //     console.log("save button gets here...");
-  //     this.$emit("saved", this.client); 
-  //   },
-  //   onCancel() {
-  //     console.log("cancel button gets here...");
-  //     this.$emit("canceled");
+  //   computed: {
+  //   dialog: {
+  //     //get 和set是固定的
+  //     get() {
+  //       return this.EditFuncShow;
+  //     },
+  //     set(newvalue) {
+  //       this.$emit("close", newvalue);
+  //     },
   //   },
   // },
+  methods: {
+    onSave() {
+      //console.log("onSave client =",this.client);
+      console.log("save button gets here...");
+      this.$emit("saved", this.client); 
+    },
+    onCancel() {
+      console.log("cancel button gets here...");
+      this.$emit("canceled");
+    },
+  },
 
 };
 </script>
