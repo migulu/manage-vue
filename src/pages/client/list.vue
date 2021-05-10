@@ -117,6 +117,12 @@
         @saved="onEditClientSaved"
         @canceled="onEditClientCanceled"
       ></edit-client>
+      <EditFunc   
+      :client="funcData"
+      :visible="isDialogfunc" 
+       @saved="openFuncClientSaved"
+       @canceled="openFuncClientCanceled"
+       ></EditFunc>
     </template>
     <!-- <v-btn @click="showMsg()">秀MSG</v-btn> -->
   </v-container>
@@ -124,18 +130,21 @@
 
 <script>
   import EditClient from "@/components/EditClient.vue"; //修改客戶資料
-
+  import EditFunc from "@/components/EditFunc.vue"
   let moment = require("moment"); //要處理日期的
   export default {
     name: "List",
     components: {
       EditClient,
+      EditFunc
     },
     data() {
       return {
-        isDialogVisible: false, //跳出dialog先預設 false .現在這樣寫會變成全域--會當掉，應該另外做個component,
+        isDialogVisible: false, 
+        isDialogfunc:false,
         clientId: 0,
         clientData: {}, //單一筆修改客戶資料
+        funcData: {}, //單一筆修改客戶資料
         watch: {
           editDialog(val) {
             val || this.closeDelete();
@@ -480,13 +489,47 @@
         // alert("要修改" + id + "的資料");
       },
 
-      openFunc(id) {
-        alert("要修改" + id + "的功能");
-      },
       openDialog() {
         this.isDialogVisible = true;
       },
-      //關閉按鈕--還未串
+
+//==== 跳出功能視窗
+   openFunc(id) {
+        // alert("要修改" + id + "的功能");
+           this.$api.v1.clients.detail(id).then((response) => {
+          this.funcData = response.data;
+          this.isDialogfunc = true;
+        });
+      },
+     openFuncClientSaved(client) {
+        console.log("client save");
+        this.$api.v1.clients.detailUpdate(client).then((response) => {
+          if (response.data.result === "0") {
+            const findData = (element) => element.cid === response.data.cid;
+            const savedDataIndex = this.clients.findIndex(findData);
+            //this.clients[savedDataIndex] = client;
+            console.log("saveDataIndex=" + savedDataIndex);
+            let tmpClient = this.clients[savedDataIndex];
+            console.log("tmpClient=", tmpClient);
+            tmpClient.company = response.data.client.company;
+            this.$set(this.clients, savedDataIndex, tmpClient);
+
+            console.log(this.clients);
+          }
+          //console.log("response=", response);
+        });
+
+        this.isDialogfunc = false;
+      },
+      openFuncClientCanceled() {
+        this.isDialogfunc = false;
+      },
+
+       openFuncDialog() {
+        this.isDialogfunc = true;
+      },
+
+      //關閉按鈕
       deleteItemConfirm() {
         this.closeDelete();
       },
