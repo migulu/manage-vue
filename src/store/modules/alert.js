@@ -1,18 +1,21 @@
-const snackbar = {
+const alert = {
   namespaced: true,
   state: {
     msg: '',
     visible: false,
-    showClose: false,
-    timeout: 2000,
-    color: 'pink'
+    showClose: true,
+    timeout: 6000,
+    type: 'success'
   },
   mutations: {
-    OPEN_SNACKBAR (state, options) {
+    OPEN_ALERT (state, options) {
       state.visible = true
       state.msg = options.msg
+      state.type = options.type?options.type:"success"
+      console.log("options=",options);
+      console.log("state=",state)
     },
-    CLOSE_SNACKBAR (state) {
+    CLOSE_ALERT (state) {
       state.visible = false
     },
     // set snackbar
@@ -27,18 +30,14 @@ const snackbar = {
     }
   },
   actions: {
-    openSnackbar (context, options) {
-      const timeout = context.state.timeout
-
-      context.commit('OPEN_SNACKBAR', {
-        msg: options.msg
+    openAlert (context, options) {
+      context.commit('OPEN_ALERT', {
+        msg: options.msg,
+        type: options.type
       })
 
-      setTimeout(() => {
-        context.commit('CLOSE_SNACKBAR')
-      }, timeout)
     }
   }
 }
 
-export default snackbar
+export default alert

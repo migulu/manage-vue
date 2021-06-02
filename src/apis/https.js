@@ -2,14 +2,15 @@ import axios from 'axios'
 import router from '../router/index.js';
 import store from '@/store'
 //import router from '../router.js'
-import {tip, toLogin, to403Page} from './utils.js'
+import {toLogin, to403Page} from './utils.js'
+import utils from '@/helper/utils.js'
 
 
 //有正常連上 api server，然後 server 回傳的錯誤
 const errorHandle = (status, msg) => {
   switch (status) {
     case 400:
-      tip(msg);
+      utils.tip(msg);
       break;
     
     case 401:
@@ -20,7 +21,7 @@ const errorHandle = (status, msg) => {
           'token': '',
           'isLogin': false
         });
-        console.log('登入過期，請重新登入')
+        utils.tip('登入過期，請重新登入')
       setTimeout(() => {
         toLogin();
       },1000);
@@ -32,7 +33,7 @@ const errorHandle = (status, msg) => {
       break;
     
     case 404:
-      tip(msg);
+      utils.tip(msg);
       break;
     
     default:
@@ -54,33 +55,30 @@ instance.interceptors.request.use((config) => {
   //console.log("config=",config);
   return config;
 },(error) => {
-  //console.log("error from request",error);
+  console.log("error from request",error);
   return Promise.reject(error);
 });
 
-instance.interceptors.response.use((response) => {
+instance.interceptors.response.use(
+  (response) => {
   //console.log("axio response=",response)
   return response;
-}, (error) => {
-  const { response } = error;
-
-  if (response) {
-    errorHandle(response.status, response.data.error);
+}, 
+  (error) => {
+  if (error && error.response) {
+    errorHandle(error.response.status, error.response.data.error);
     return Promise.reject(error);
   } else {
-    if (!window.navigator.onLine) {
-      //tip('網路出了點問題');
-    } else {
-      return Promise.reject(error);
-    }
+    return Promise.reject(new Error("API server 連不上!"));
+    //utils.tip("API server 連不上")
   }
 })
 
 export default function (method, url, data=null) {
   method = method.toLowerCase();
-  //console.log("method="+method);
+  console.log("method="+method);
   if (method == 'post') {
-    return instance.post(url, data);
+    return instance.post(url, data)
   } else if (method == 'get') {
     return instance.get(url, {params: data})
   } else if (method == 'delete') {

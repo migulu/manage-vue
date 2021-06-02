@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <section id="login" class="d-flex justify-center align-center">
     <v-card class="mx-auto" max-width="344">
       <v-card-text>
         <h1 class="display-1 text--primary mb-3 text-center">
@@ -28,7 +28,7 @@
         <v-btn @click="doLogin()" depressed color="primary" block> 登入 </v-btn>
       </v-card-text>
     </v-card>
-  </v-container>
+  </section>
 </template>
 
 <script>
@@ -44,22 +44,24 @@
         password: "",
         account: "",
         rules: {
-          required: (value) => !!value || "Required.",
-          min: (v) => v.length >= 8 || "Min 8 characters",
+          required: (value) => !!value || "必填欄位.",
+          min: (v) => v.length >= 8 || "最少8個字元",
           emailMatch: () => "The email and password you entered don't match",
         },
       };
     },
     methods: {
       doLogin() {
-        console.log("Do Login",process.env);
+        //console.log("Do Login",process.env);
         this.$api.auth
           .login({ account: this.account, password: this.password })
           .then((response) => {
             console.log("response=", response);
             if (response.data === null || response.data.status === undefined) {
-              this.$store.dispatch("snackbar/openSnackbar", {
-                msg: "請輸入正確的帳號密碼",
+              //this.$utils.alert("請輸入正確的帳號密碼")
+              this.$store.dispatch("alert/openAlert", {
+                 msg: "請輸入正確的帳號密碼",
+                 type: "error"
               });
             } else {
               this.$store
@@ -101,3 +103,31 @@
     },
   };
 </script>
+<!-- style一定要放在最下面  -->
+<style lang="scss">
+// @import '~vuetify/src/styles/styles.sass';
+@import './src/assets/sass/main.scss';//載入自訂的scss,
+/*---  登入畫面-css ---*/
+#login{
+    position: relative;
+    height: calc( 100vh - 64px );
+    background:#E1E1E1;
+    .v-card{
+        position: relative;
+        z-index: 2;
+        width: 380px;
+    }
+  &::before{
+    content:" ";
+    position: absolute;
+    top:0;
+    left: 0;
+   @include size(0,0);
+    z-index: 1;
+  border-style: solid;
+  border-width: calc( 100vh - 64px ) 0 0 100vw;
+  border-color: transparent transparent transparent $primary;
+  }
+  }
+
+</style>

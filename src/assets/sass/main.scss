@@ -1,0 +1,47 @@
+//自訂義scss. 可以載入到其他component,是在該.vue裡面直接放入css
+@import '~vuetify/src/styles/styles.sass';//範本有這段，好像是指全部變數
+@import 'variables.scss';//自訂義的變數和函式
+
+
+/*------------------------------------*\
+常見預設值
+\*------------------------------------*/
+$h-font-sizes: (
+  1: 2.5rem,
+  2: 2rem,
+  3: 1.75rem,
+  4: 1.5rem,
+  5: 1.25rem,
+  6: 1rem,
+);
+//h1-h6字級
+@each $name, $num in $h-font-sizes {
+   h#{$name}{
+    font-size: $num;
+  }
+}
+h1,h2,h3,h4,h5,h6{
+  margin-top: 0;
+  margin-bottom: .5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+/*------------------------------------*\
+每頁慣用元件
+\*------------------------------------*/
+
+/*每頁標題*/
+.manage-title {
+  font-size: 1.5rem;
+  border-bottom: 1px solid $gray-light;
+  margin-bottom: 1.5rem;
+  padding-left: 24px;
+}
+/*限制最大寬度*/
+.container-desktop{
+  max-width: 1320px;
+  margin: auto;
+}
+
+//   @import '~vuetify/src/styles/main.sass';//範本有這段，不懂指什麼?
