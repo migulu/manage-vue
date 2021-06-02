@@ -72,7 +72,7 @@
           ></v-text-field>
         </v-col>
         <v-col cols="12" lg="auto">
-          <v-btn depressed color="primary" @click=getClientList>
+          <v-btn depressed color="primary" @click="getClientList">
             搜尋
           </v-btn>
         </v-col>
@@ -117,12 +117,12 @@
         @saved="onEditClientSaved"
         @canceled="onEditClientCanceled"
       ></edit-client>
-      <EditFunc   
-      :client="funcData"
-      :visible="isDialogfunc" 
-       @saved="openFuncClientSaved"
-       @canceled="openFuncClientCanceled"
-       ></EditFunc>
+      <EditFunc
+        :func="funcData"
+        :visible="isDialogfunc"
+        @saved="openFuncClientSaved"
+        @canceled="openFuncClientCanceled"
+      ></EditFunc>
     </template>
     <!-- <v-btn @click="showMsg()">秀MSG</v-btn> -->
   </v-container>
@@ -130,21 +130,22 @@
 
 <script>
   import EditClient from "@/components/EditClient.vue"; //修改客戶資料
-  import EditFunc from "@/components/EditFunc.vue"
+  import EditFunc from "@/components/EditFunc.vue";
+
   let moment = require("moment"); //要處理日期的
   export default {
     name: "List",
     components: {
       EditClient,
-      EditFunc
+      EditFunc,
     },
     data() {
       return {
-        isDialogVisible: false, 
-        isDialogfunc:false,
+        isDialogVisible: false,
+        isDialogfunc: false,
         clientId: 0,
         clientData: {}, //單一筆修改客戶資料
-        funcData: {}, //單一筆修改客戶資料
+        funcData: [], //單一筆修改客戶資料
         watch: {
           editDialog(val) {
             val || this.closeDelete();
@@ -169,32 +170,32 @@
             select: "",
             items: [
               { text: "啟用", value: "Y" },
-              { text: "不啟用", value: "N" }
-            ]
+              { text: "不啟用", value: "N" },
+            ],
           },
-        frontend: {
-          select: "",
-          items: [
-            { text: "開啟", value: "Y" },
-            { text: "關閉", value: "N" },
-          ],
-        },
-        overdue: {
-          select: "",
-          items: [
-            { text: "未逾期", value: "N" },
-            { text: "逾期", value: "Y" },
-          ],
-        },
-        package: {
-          select: "",
-          items: []
-        },
-        dealer: {
-          select: "",
-          items: []
-        },
-        keyword:""
+          frontend: {
+            select: "",
+            items: [
+              { text: "開啟", value: "Y" },
+              { text: "關閉", value: "N" },
+            ],
+          },
+          overdue: {
+            select: "",
+            items: [
+              { text: "未逾期", value: "N" },
+              { text: "逾期", value: "Y" },
+            ],
+          },
+          package: {
+            select: "",
+            items: [],
+          },
+          dealer: {
+            select: "",
+            items: [],
+          },
+          keyword: "",
         },
         //select-多筆資料
         selectItems2: [
@@ -364,93 +365,108 @@
         });
       },
       getClientList() {
-        //const list = this.$api.v1.clients.list();    
-        let param = {}
-        if (this.$route.query.type !== undefined){
-          param['type'] = this.$route.query.type;
+        //const list = this.$api.v1.clients.list();
+        let param = {};
+        if (this.$route.query.type !== undefined) {
+          param["type"] = this.$route.query.type;
           param["package"] = 12;
         } else {
-          param["package"] = this.selectItems['package'].select;  
+          param["package"] = this.selectItems["package"].select;
         }
-        param["active"] = this.selectItems['active'].select;
-        param["frontend"] = this.selectItems['frontend'].select;
-        param["overdue"] = this.selectItems['overdue'].select;
-        
-        param["dealer"] = this.selectItems['dealer'].select;
-        param["keyword"] = this.selectItems['keyword']
+        param["active"] = this.selectItems["active"].select;
+        param["frontend"] = this.selectItems["frontend"].select;
+        param["overdue"] = this.selectItems["overdue"].select;
+
+        param["dealer"] = this.selectItems["dealer"].select;
+        param["keyword"] = this.selectItems["keyword"];
 
         console.log(param);
-      
 
-        this.$api.v1.clients.list(param).then((response) => {
-          const clients = [];
-          if (Array.isArray(response.data)) {
-            response.data.forEach(function(item) {
-              (item.backstage = { icon: "mdi-pencil", link: item.backend_url }),
-                (item.status = [
-                  "delete",
-                  item.backend_status,
-                  item.fronted_status,
-                  item.auto_close_status,
-                ]);
-              item.date = item.start_date + " / " + item.end_date;
-              item.info = { icon: "mdi-cogs", id: item.cid };
-              item.func = { icon: "mdi-playlist-edit", id: item.cid };
-              //item.start_date = item.start_time;
+        this.$api.v1.clients.list(param).then(
+          (response) => {
+            const clients = [];
+            //console.log("response=",response.data);
+            if (response.data.success === "true") {
+              //console.log("success")
+              response.data.result.forEach(function(item) {
+                (item.backstage = {
+                  icon: "mdi-pencil",
+                  link: item.backend_url,
+                }),
+                  (item.status = [
+                    "delete",
+                    item.backend_status,
+                    item.fronted_status,
+                    item.auto_close_status,
+                  ]);
+                item.date = item.start_date + " / " + item.end_date;
+                item.info = { icon: "mdi-cogs", id: item.cid };
+                item.func = { icon: "mdi-playlist-edit", id: item.cid };
+                //item.start_date = item.start_time;
 
-              //  if (item.)
-              //  ,
-              //   { icon: "mdi-check-circle" },
-              //   { icon: "mdi-check-circle" },
-              //   { icon: "mdi-close-circle-outline" },
-              if (item.last_login_time) {
-                item.last_login_time = moment(item.last_login_time).format(
-                  "YYYY-MM-DD HH:mm:ss"
-                );
-              } else {
-                item.last_login_time = "0000-00-00 00:00:00";
-              }
-              if (item.last_access_time) {
-                item.last_access_time = moment(item.last_access_time).format(
-                  "YYYY-MM-DD HH:mm:ss"
-                );
-              } else {
-                item.last_access_time = "0000-00-00 00:00:00";
-              }
-              clients.push(item);
+                //  if (item.)
+                //  ,
+                //   { icon: "mdi-check-circle" },
+                //   { icon: "mdi-check-circle" },
+                //   { icon: "mdi-close-circle-outline" },
+                if (item.last_login_time) {
+                  item.last_login_time = moment(item.last_login_time).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  );
+                } else {
+                  item.last_login_time = "0000-00-00 00:00:00";
+                }
+                if (item.last_access_time) {
+                  item.last_access_time = moment(item.last_access_time).format(
+                    "YYYY-MM-DD HH:mm:ss"
+                  );
+                } else {
+                  item.last_access_time = "0000-00-00 00:00:00";
+                }
+                clients.push(item);
 
-              //this.desserts.push(item);
-            });
-            this.clients = clients;
-            console.log("response", response.data);
-          } else {
-            console.log(response.data);
+                //this.desserts.push(item);
+              });
+              this.clients = clients;
+              console.log("response", response.data);
+            } else {
+              this.$store.dispatch("alert/openAlert", {
+                msg: "無法取得客戶資料",
+                type: "error",
+              });
+              console.log(response.data);
+            }
+          },
+          (err) => {
+            this.$store.dispatch("alert/openAlert", {
+                msg: err,
+                type: "error",
+              });
           }
-        });
+        );
       },
-      getClientConfigure(){
+      getClientConfigure() {
         this.$api.v1.clients.configure().then((response) => {
           //console.log(response.data.packages);
-          let packages = [{text:"---",value:0}]
+          let packages = [{ text: "---", value: 0 }];
           if (Array.isArray(response.data.packages)) {
             response.data.packages.forEach(function(item) {
               item.text = item.name;
               item.value = item.id;
-              packages.push(item)
-            })
-            this.selectItems.package['items'] = packages;
+              packages.push(item);
+            });
+            this.selectItems.package["items"] = packages;
           }
-          let dealers = [{text:"---",value:0}]
+          let dealers = [{ text: "---", value: 0 }];
           if (Array.isArray(response.data.dealers)) {
             response.data.dealers.forEach(function(item) {
               item.text = item.company;
               item.value = item.cid;
-              dealers.push(item)
-            })
-            this.selectItems.dealer['items'] = dealers;
+              dealers.push(item);
+            });
+            this.selectItems.dealer["items"] = dealers;
           }
-
-        })
+        });
       },
       onEditClientSaved(client) {
         console.log("client save");
@@ -493,30 +509,39 @@
         this.isDialogVisible = true;
       },
 
-//==== 跳出功能視窗
-   openFunc(id) {
+      //==== 跳出功能視窗
+      openFunc(id) {
         // alert("要修改" + id + "的功能");
-           this.$api.v1.clients.detail(id).then((response) => {
-          this.funcData = response.data;
-          this.isDialogfunc = true;
+        this.$api.v1.clients.func(id).then((response) => {
+          if (response.data.success === true) {
+            this.funcData = response.data.result;
+            //console.log("func response=",this.funcData);
+            this.isDialogfunc = true;
+          } else {
+            //console.log("response.data=",response.data);
+            //console.log("utils=",utils);
+            this.$store.dispatch("alert/openAlert", {
+              msg: "無法取得功能資料",
+              type: "error",
+            });
+          }
         });
       },
-     openFuncClientSaved(client) {
-        console.log("client save");
-        this.$api.v1.clients.detailUpdate(client).then((response) => {
-          if (response.data.result === "0") {
-            const findData = (element) => element.cid === response.data.cid;
-            const savedDataIndex = this.clients.findIndex(findData);
-            //this.clients[savedDataIndex] = client;
-            console.log("saveDataIndex=" + savedDataIndex);
-            let tmpClient = this.clients[savedDataIndex];
-            console.log("tmpClient=", tmpClient);
-            tmpClient.company = response.data.client.company;
-            this.$set(this.clients, savedDataIndex, tmpClient);
-
-            console.log(this.clients);
+      openFuncClientSaved(data) {
+        //console.log("client save =",data);
+        this.$api.v1.clients.funcUpdate(data).then((response) => {
+          if (response.data.success === true) {
+            //this.$utils.snackbar('資料已存檔');
+            this.$store.dispatch("snackbar/openSnackbar", {
+              msg: "資料已存檔",
+            });
+            //console.log("func update response=", response);
+          } else {
+            this.$store.dispatch("alert/openAlert", {
+              msg: "無法正確存檔",
+              type: "error",
+            });
           }
-          //console.log("response=", response);
         });
 
         this.isDialogfunc = false;
@@ -525,7 +550,7 @@
         this.isDialogfunc = false;
       },
 
-       openFuncDialog() {
+      openFuncDialog() {
         this.isDialogfunc = true;
       },
 

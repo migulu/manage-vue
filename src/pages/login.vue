@@ -44,22 +44,24 @@
         password: "",
         account: "",
         rules: {
-          required: (value) => !!value || "Required.",
-          min: (v) => v.length >= 8 || "Min 8 characters",
+          required: (value) => !!value || "必填欄位.",
+          min: (v) => v.length >= 8 || "最少8個字元",
           emailMatch: () => "The email and password you entered don't match",
         },
       };
     },
     methods: {
       doLogin() {
-        console.log("Do Login",process.env);
+        //console.log("Do Login",process.env);
         this.$api.auth
           .login({ account: this.account, password: this.password })
           .then((response) => {
             console.log("response=", response);
             if (response.data === null || response.data.status === undefined) {
-              this.$store.dispatch("snackbar/openSnackbar", {
-                msg: "請輸入正確的帳號密碼",
+              //this.$utils.alert("請輸入正確的帳號密碼")
+              this.$store.dispatch("alert/openAlert", {
+                 msg: "請輸入正確的帳號密碼",
+                 type: "error"
               });
             } else {
               this.$store

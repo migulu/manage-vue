@@ -79,6 +79,7 @@
 
     <v-main>
       <snackbar></snackbar>
+      <alert></alert>
       <router-view />
     </v-main>
 
@@ -87,9 +88,12 @@
 
 <script>
   import Snackbar from "@/components/_partial/Snackbar";
+  import Alert from "@/components/_partial/Alert";
+  
   export default {
     components: {
       Snackbar,
+      Alert,
     },
 
     data() {
@@ -277,6 +281,18 @@
       },
       doProfile() {
          // 未設定;
+      },
+      goTo(id1, id2) {
+        const activeItem = this.items.filter((i) => i.id === id1);
+        const childItem = activeItem[0].items.filter((i) => i.id === id2);
+        //console.log(childItem[0])
+        let route;
+        if (childItem[0].type !== undefined) {
+          route = childItem[0].route + "/?type=" + childItem[0].type;
+        } else {
+          route = childItem[0].route;
+        }
+        console.log(this.$router.replace(route));
       },
     },
     computed: {
