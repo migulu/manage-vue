@@ -106,11 +106,6 @@ export default {
       client_data: this.client,
     };
   },
-  computed: {
-    clientData: function(){
-      return this.client
-    }
-  },
   methods: {
     onSave() {
       //console.log("onSave client =",this.client);

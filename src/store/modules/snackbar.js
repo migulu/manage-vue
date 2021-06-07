@@ -3,8 +3,8 @@ const snackbar = {
   state: {
     msg: '',
     visible: false,
-    showClose: false,
-    timeout: 2000,
+    showClose: true,
+    timeout: 6000,
     color: 'pink'
   },
   mutations: {

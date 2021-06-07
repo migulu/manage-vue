@@ -13,12 +13,6 @@ const clients = {
   detailUpdate(params){
     return req('put', '/v1/clients/detail',params)
   },
-  func(id) {
-    return req('get', '/v1/clients/func/'+id);
-  },
-  funcUpdate(params){
-    return req('put', '/v1/clients/func',params)
-  },
 
 }
 

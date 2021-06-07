@@ -4,7 +4,6 @@ import createPersistedState from 'vuex-persistedstate'
 
 import auth from '@/store/modules/auth'
 import snackbar from '@/store/modules/snackbar'
-import alert from '@/store/modules/alert'
 
 Vue.use(Vuex)
 
@@ -17,8 +16,7 @@ export default new Vuex.Store({
   },
   modules: {
     auth,
-    snackbar: snackbar,
-    alert: alert
+    snackbar: snackbar
 
   },
   plugins: [createPersistedState({
